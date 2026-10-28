@@ -58,13 +58,23 @@ Il joue sous toute la vidéo : bas sous la voix off, plus fort sur les annonces,
 Il est calé pour que le beat (46,3 s dans le fichier) tombe pile au début du premier extrait, même si les durées changent.
 Les volumes et le calage se règlent dans `FOND_MUSICAL` (`src/config.ts`).
 
-**Extraits rappés** : l'instrumentale ne contient pas les voix de Kery James, Lino et Youssoupha. Pour entendre les vrais extraits pendant les pauses :
+**Extraits rappés** : tirés du morceau original, `public/audio/musique-negre.m4a` (piste audio du clip, 5 min 21).
+Chaque pause joue le passage correspondant, repéré par transcription automatique et coupé au mot près, avec un fondu très court aux deux bouts. Pendant un extrait, l'instrumentale se coupe.
 
-1. Dépose le morceau original dans `public/audio/`, par exemple `public/audio/musique-negre.mp3`.
-2. Dans `src/config.ts`, mets `MORCEAU_ORIGINAL = "audio/musique-negre.mp3"`.
-3. Pour chaque extrait de `EXTRAITS`, remplace `debut: null` par la seconde où commence le passage dans le morceau (par exemple `debut: 83.5` pour 1:23,5). Ajuste `duree` à la longueur du passage.
+| Extrait | Passage | Dans le morceau original |
+| --- | --- | --- |
+| `EXTRAIT_KERY_1` | l'angle mort | 1:42,9 → 1:48,2 |
+| `EXTRAIT_KERY_2` | le bruit et l'odeur | 1:48,6 → 1:55,5 |
+| `EXTRAIT_KERY_3` | tam-tam, rossignol, prime time | 3:18,5 → 3:23,4 |
+| `EXTRAIT_YOUSS_1` | nègre / négrier | 3:54,9 → 3:58,3 |
+| `EXTRAIT_YOUSS_2` | Haïti | 4:30,3 → 4:33,9 |
+| `EXTRAIT_YOUSS_3` | ni le CRAN ni la LICRA | 4:33,8 → 4:37,8 |
+| `EXTRAIT_LINO_1` | Rosa Parks | 1:06,9 → 1:10,5 |
+| `EXTRAIT_LINO_2` | Toussaint Louverture | 1:10,5 → 1:14,3 |
+| `EXTRAIT_REFRAIN` | « pas calibré pour la FM », « Yes we can » | 3:25,8 → 3:35,8 |
 
-Pendant un extrait du morceau original, l'instrumentale se coupe. Les extraits laissés à `null` gardent l'instrumentale.
+Pour décaler un extrait, modifie son `debut` (en secondes dans le morceau) et sa `duree` dans `EXTRAITS` (`src/config.ts`). Le volume se règle avec `MORCEAU_ORIGINAL_VOLUME`.
+Un extrait remis à `debut: null` laisse l'instrumentale à sa place.
 
 ## Extraits du morceau
 
@@ -79,17 +89,17 @@ Chaque pause est une séquence nommée (`EXTRAIT_KERY_1`, etc.) visible dans la 
 
 | Marqueur | Début | Fin | Durée | Images |
 | --- | --- | --- | --- | --- |
-| `EXTRAIT_KERY_1` | 00:00:16:24 | 00:00:21:24 | 5.00 s | 504 → 653 |
-| `EXTRAIT_KERY_2` | 00:00:37:18 | 00:00:42:18 | 5.00 s | 1128 → 1277 |
-| `EXTRAIT_KERY_3` | 00:00:52:12 | 00:00:57:12 | 5.00 s | 1572 → 1721 |
-| `EXTRAIT_YOUSS_1` | 00:00:58:21 | 00:01:03:21 | 5.00 s | 1761 → 1910 |
-| `EXTRAIT_YOUSS_2` | 00:01:12:15 | 00:01:17:15 | 5.00 s | 2175 → 2324 |
-| `EXTRAIT_YOUSS_3` | 00:01:25:09 | 00:01:30:09 | 5.00 s | 2559 → 2708 |
-| `EXTRAIT_LINO_1` | 00:01:38:18 | 00:01:43:18 | 5.00 s | 2958 → 3107 |
-| `EXTRAIT_LINO_2` | 00:01:52:27 | 00:01:57:27 | 5.00 s | 3387 → 3536 |
-| `EXTRAIT_REFRAIN` | 00:02:07:06 | 00:02:12:06 | 5.00 s | 3816 → 3965 |
+| `EXTRAIT_KERY_1` | 00:00:16:24 | 00:00:22:03 | 5.30 s | 504 → 662 |
+| `EXTRAIT_KERY_2` | 00:00:37:27 | 00:00:44:24 | 6.90 s | 1137 → 1343 |
+| `EXTRAIT_KERY_3` | 00:00:54:18 | 00:00:59:15 | 4.90 s | 1638 → 1784 |
+| `EXTRAIT_YOUSS_1` | 00:01:00:24 | 00:01:04:08 | 3.47 s | 1824 → 1927 |
+| `EXTRAIT_YOUSS_2` | 00:01:13:02 | 00:01:16:20 | 3.60 s | 2192 → 2299 |
+| `EXTRAIT_YOUSS_3` | 00:01:24:14 | 00:01:28:14 | 4.00 s | 2534 → 2653 |
+| `EXTRAIT_LINO_1` | 00:01:36:23 | 00:01:40:11 | 3.60 s | 2903 → 3010 |
+| `EXTRAIT_LINO_2` | 00:01:49:20 | 00:01:53:14 | 3.80 s | 3290 → 3403 |
+| `EXTRAIT_REFRAIN` | 00:02:02:23 | 00:02:12:23 | 10.00 s | 3683 → 3982 |
 
-Durée totale : 00:02:27:21 (147.7 s, 4431 images à 30 fps). Timecodes au format HH:MM:SS:images.
+Durée totale : 00:02:28:08 (148.3 s, 4448 images à 30 fps). Timecodes au format HH:MM:SS:images.
 
 <!-- TIMECODES:FIN -->
 

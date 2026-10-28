@@ -49,15 +49,17 @@ export const NOMS_ANNONCE: Record<ArtisteId, string> = {
 type Extrait = { artiste: ArtisteId; duree: number; debut: number | null };
 
 const extraits = {
-  EXTRAIT_KERY_1: { artiste: "kery", duree: 5, debut: null },
-  EXTRAIT_KERY_2: { artiste: "kery", duree: 5, debut: null },
-  EXTRAIT_KERY_3: { artiste: "kery", duree: 5, debut: null },
-  EXTRAIT_YOUSS_1: { artiste: "youssoupha", duree: 5, debut: null },
-  EXTRAIT_YOUSS_2: { artiste: "youssoupha", duree: 5, debut: null },
-  EXTRAIT_YOUSS_3: { artiste: "youssoupha", duree: 5, debut: null },
-  EXTRAIT_LINO_1: { artiste: "lino", duree: 5, debut: null },
-  EXTRAIT_LINO_2: { artiste: "lino", duree: 5, debut: null },
-  EXTRAIT_REFRAIN: { artiste: "trio", duree: 5, debut: null },
+  // Morceau original (musique-negre.m4a) : début et durée de chaque passage,
+  // repérés par transcription automatique puis coupés au mot près.
+  EXTRAIT_KERY_1: { artiste: "kery", duree: 5.3, debut: 102.9 }, // l'angle mort
+  EXTRAIT_KERY_2: { artiste: "kery", duree: 6.9, debut: 108.6 }, // le bruit et l'odeur
+  EXTRAIT_KERY_3: { artiste: "kery", duree: 4.9, debut: 198.45 }, // tam-tam, rossignol, prime time
+  EXTRAIT_YOUSS_1: { artiste: "youssoupha", duree: 3.45, debut: 234.85 }, // nègre / négrier
+  EXTRAIT_YOUSS_2: { artiste: "youssoupha", duree: 3.6, debut: 270.25 }, // Haïti
+  EXTRAIT_YOUSS_3: { artiste: "youssoupha", duree: 4, debut: 273.8 }, // ni le CRAN ni la LICRA
+  EXTRAIT_LINO_1: { artiste: "lino", duree: 3.6, debut: 66.9 }, // Rosa Parks
+  EXTRAIT_LINO_2: { artiste: "lino", duree: 3.8, debut: 70.45 }, // Toussaint Louverture
+  EXTRAIT_REFRAIN: { artiste: "trio", duree: 10, debut: 205.8 }, // « pas calibré pour la FM », « Yes we can »
 } satisfies Record<string, Extrait>;
 
 export type MarqueurExtrait = keyof typeof extraits;
@@ -128,5 +130,5 @@ export const FOND_MUSICAL: {
 // Morceau original, avec les voix, d'où sont tirés les extraits.
 // Exemple : "audio/musique-negre.mp3". Renseigne ensuite `debut` dans EXTRAITS.
 // Pendant un extrait du morceau original, l'instrumentale se coupe.
-export const MORCEAU_ORIGINAL: string | null = null;
+export const MORCEAU_ORIGINAL: string | null = "audio/musique-negre.m4a";
 export const MORCEAU_ORIGINAL_VOLUME = 1;
