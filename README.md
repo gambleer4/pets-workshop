@@ -38,7 +38,7 @@ Dépose les photos dans `public/images/` avec exactement ces noms :
 
 Le traitement (noir et blanc, contraste, grain photocopie, Ken Burns) est appliqué automatiquement.
 Si un fichier manque, un cadre gris avec le nom de la personne le remplace. Après avoir ajouté des photos, recharge le Studio.
-Le visage est cadré vers le haut de l'image (`objectPosition: 50% 30%` dans `src/components/Photo.tsx`) : préfère des portraits où le visage est dans le tiers supérieur.
+Le visage est cadré vers le haut de l'image : préfère des portraits où le visage est dans le tiers supérieur. Pour une photo où la personne est décentrée, règle son `cadrage` dans `PERSONNES` (`src/config.ts`), comme pour Rosa Parks.
 
 ## Voix off
 

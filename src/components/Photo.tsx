@@ -57,8 +57,8 @@ export const Photo: React.FC<Props> = ({
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "50% 30%",
-              filter: "grayscale(1) contrast(1.35) url(#xerox)",
+              objectPosition: PERSONNES[personne].cadrage ?? "50% 30%",
+              filter: `brightness(${PERSONNES[personne].exposition ?? 1}) grayscale(1) contrast(1.15) url(#xerox)`,
             }}
           />
         ) : (

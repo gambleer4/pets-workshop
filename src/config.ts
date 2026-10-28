@@ -8,17 +8,25 @@ export const HEIGHT = 1920;
 
 // --- Personnes et photos (fichiers dans public/images/) -------------------
 
-export const PERSONNES = {
+// `cadrage` (facultatif) : point de l'image gardé au centre quand elle est
+// recadrée, en % horizontal puis vertical. Par défaut "50% 30%".
+// `exposition` (facultatif) : éclaircit (> 1) ou assombrit (< 1) la photo
+// avant le traitement photocopie, si un visage sort trop sombre. Par défaut 1.
+export const PERSONNES: Record<
+  "kery" | "lino" | "youssoupha" | "lesquen" | "chirac" | "rosaParks" | "toussaint" | "bonaparte" | "obama",
+  { nom: string; fichier: string; cadrage?: string; exposition?: number }
+> = {
   kery: { nom: "Kery James", fichier: "kery.jpg" },
   lino: { nom: "Lino", fichier: "lino.jpg" },
   youssoupha: { nom: "Youssoupha", fichier: "youssoupha.jpg" },
   lesquen: { nom: "Henry de Lesquen", fichier: "lesquen.jpg" },
   chirac: { nom: "Jacques Chirac", fichier: "chirac.jpg" },
-  rosaParks: { nom: "Rosa Parks", fichier: "rosa-parks.jpg" },
-  toussaint: { nom: "Toussaint Louverture", fichier: "toussaint-louverture.jpg" },
+  // Rosa Parks est assise à droite dans la photo du bus.
+  rosaParks: { nom: "Rosa Parks", fichier: "rosa-parks.jpg", cadrage: "90% 40%" },
+  toussaint: { nom: "Toussaint Louverture", fichier: "toussaint-louverture.jpg", exposition: 1.4 },
   bonaparte: { nom: "Napoléon Bonaparte", fichier: "bonaparte.jpg" },
-  obama: { nom: "Barack Obama", fichier: "obama.jpg" },
-} as const;
+  obama: { nom: "Barack Obama", fichier: "obama.jpg", cadrage: "80% 30%" },
+};
 
 export type PersonneId = keyof typeof PERSONNES;
 

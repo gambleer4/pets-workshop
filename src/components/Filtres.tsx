@@ -13,14 +13,20 @@ export const Filtres: React.FC = () => {
     <svg width={0} height={0} style={{ position: "absolute" }}>
       <defs>
         <filter id="xerox" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="gris" />
+          <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="niveaux" />
+          {/* Éclaircit les ombres avant le seuil, pour garder le détail des peaux foncées. */}
+          <feComponentTransfer in="niveaux" result="gris">
+            <feFuncR type="gamma" amplitude={1} exponent={0.55} offset={0} />
+            <feFuncG type="gamma" amplitude={1} exponent={0.55} offset={0} />
+            <feFuncB type="gamma" amplitude={1} exponent={0.55} offset={0} />
+          </feComponentTransfer>
           <feTurbulence type="fractalNoise" baseFrequency="0.48" numOctaves={2} seed={graineXerox} result="bruit" />
           <feColorMatrix in="bruit" type="saturate" values="0" result="bruitGris" />
           <feComposite in="gris" in2="bruitGris" operator="arithmetic" k1={0} k2={1} k3={0.85} k4={-0.42} result="melange" />
           <feComponentTransfer in="melange">
-            <feFuncR type="linear" slope={4.6} intercept={-1.8} />
-            <feFuncG type="linear" slope={4.6} intercept={-1.8} />
-            <feFuncB type="linear" slope={4.6} intercept={-1.8} />
+            <feFuncR type="linear" slope={3.6} intercept={-1.3} />
+            <feFuncG type="linear" slope={3.6} intercept={-1.3} />
+            <feFuncB type="linear" slope={3.6} intercept={-1.3} />
             <feFuncA type="linear" slope={0} intercept={1} />
           </feComponentTransfer>
         </filter>
