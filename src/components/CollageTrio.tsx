@@ -16,11 +16,13 @@ const CARTES: {
 ];
 
 // Les trois artistes collés côte à côte, avec leur nom sur un bandeau.
+// `entree` à false : les cartes sont déjà en place, sans coup de tampon.
 export const CollageTrio: React.FC<{
   arrivee?: number;
   ecart?: number;
   noms?: boolean;
-}> = ({ arrivee = 0, ecart = 6, noms = true }) => {
+  entree?: boolean;
+}> = ({ arrivee = 0, ecart = 6, noms = true, entree = true }) => {
   const { durationInFrames } = useVideoConfig();
 
   return (
@@ -30,8 +32,8 @@ export const CollageTrio: React.FC<{
         <Sequence
           key={c.personne}
           name={c.nom}
-          from={arrivee + i * ecart}
-          durationInFrames={Math.max(1, durationInFrames - arrivee - i * ecart)}
+          from={entree ? arrivee + i * ecart : 0}
+          durationInFrames={Math.max(1, durationInFrames - (entree ? arrivee + i * ecart : 0))}
           layout="none"
         >
           <CartePhoto
@@ -42,6 +44,7 @@ export const CollageTrio: React.FC<{
             hauteur={600}
             inclinaison={c.inclinaison}
             mouvement={i === 1 ? "zoom-arriere" : "zoom-avant"}
+            arrivee={entree ? 0 : -10}
           />
           {noms ? (
             <div

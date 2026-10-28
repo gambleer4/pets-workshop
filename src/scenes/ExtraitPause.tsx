@@ -1,7 +1,7 @@
 import { AbsoluteFill, getRemotionEnvironment } from "remotion";
 import type { ArtisteId, MarqueurExtrait } from "../config";
 import { inter } from "../components/fonts";
-import { Photo, PhotosTrio } from "../components/Photo";
+import { PortraitArtiste } from "../components/PortraitArtiste";
 
 // Scène PAUSE : la photo de l'artiste en zoom lent pendant l'extrait.
 // La zone du bas reste vide pour la phrase ajoutée au montage.
@@ -11,11 +11,7 @@ export const ExtraitPause: React.FC<{
   marqueur?: MarqueurExtrait;
 }> = ({ artiste, marqueur }) => (
   <AbsoluteFill>
-    {artiste === "trio" ? (
-      <PhotosTrio luminosite={0.85} />
-    ) : (
-      <Photo personne={artiste} luminosite={0.85} mouvement="zoom-avant" />
-    )}
+    <PortraitArtiste artiste={artiste} luminosite={0.85} entree={false} />
 
     <AbsoluteFill
       style={{ background: "linear-gradient(to bottom, transparent 62%, rgba(0,0,0,0.9) 82%)" }}

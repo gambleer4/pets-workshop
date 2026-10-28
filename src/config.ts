@@ -16,10 +16,10 @@ export const PERSONNES: Record<
   "kery" | "lino" | "youssoupha" | "lesquen" | "chirac" | "rosaParks" | "toussaint" | "bonaparte" | "obama",
   { nom: string; fichier: string; cadrage?: string; exposition?: number }
 > = {
-  kery: { nom: "Kery James", fichier: "kery.jpg" },
-  lino: { nom: "Lino", fichier: "lino.jpg" },
+  kery: { nom: "Kery James", fichier: "kery.jpg", cadrage: "50% 40%", exposition: 1.3 },
+  lino: { nom: "Lino", fichier: "lino.jpg", cadrage: "49% 35%", exposition: 1.35 },
   youssoupha: { nom: "Youssoupha", fichier: "youssoupha.jpg" },
-  lesquen: { nom: "Henry de Lesquen", fichier: "lesquen.jpg" },
+  lesquen: { nom: "Henry de Lesquen", fichier: "lesquen.jpg", cadrage: "58% 30%" },
   chirac: { nom: "Jacques Chirac", fichier: "chirac.jpg" },
   // Rosa Parks est assise à droite dans la photo du bus.
   rosaParks: { nom: "Rosa Parks", fichier: "rosa-parks.jpg", cadrage: "90% 40%" },

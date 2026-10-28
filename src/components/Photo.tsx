@@ -138,18 +138,3 @@ export const CartePhoto: React.FC<{
     </div>
   );
 };
-
-// Les trois artistes en colonnes plein cadre, fondues dans le noir.
-export const PhotosTrio: React.FC<{ luminosite?: number }> = ({ luminosite }) => {
-  const artistes: PersonneId[] = ["kery", "lino", "youssoupha"];
-
-  return (
-    <AbsoluteFill style={{ flexDirection: "row" }}>
-      {artistes.map((id, i) => (
-        <div key={id} style={{ position: "relative", flex: 1 }}>
-          <Photo personne={id} luminosite={luminosite} mouvement={i === 1 ? "zoom-arriere" : "zoom-avant"} />
-        </div>
-      ))}
-    </AbsoluteFill>
-  );
-};
