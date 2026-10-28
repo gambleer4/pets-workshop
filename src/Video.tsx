@@ -5,8 +5,8 @@ import { Grain } from "./components/Grain";
 import { ImagesProvider, type ImagesDisponibles } from "./components/images";
 import { Flash, FonduAuNoir, Poussiere, Vignette } from "./components/Overlays";
 import { ExtraitAudio, extraitOriginal, FondMusical, VoixOff } from "./components/Sons";
+import { EntreeDechiree } from "./components/Transition";
 import { dureesVoix, type VoixTrouvees } from "./components/voix";
-import { Annonce } from "./scenes/Annonce";
 import { ExtraitPause } from "./scenes/ExtraitPause";
 import {
   AngleMort,
@@ -32,25 +32,33 @@ export type VideoProps = {
 const SCENES: Record<SceneId, React.FC> = {
   intro: Intro,
   contexte: Contexte,
-  keryAngleMort: AngleMort,
-  keryChirac: BruitOdeur,
-  keryTamTam: TamTam,
-  youssNegrier: Negrier,
-  youssHaiti: Haiti,
-  youssCranLicra: CranLicra,
-  linoRosaParks: RosaParks,
-  linoLouverture: Louverture,
+  keryRosaParks: RosaParks,
+  keryLouverture: Louverture,
+  youssAngleMort: AngleMort,
+  youssChirac: BruitOdeur,
+  duoTamTam: TamTam,
   refrainObama: YesWeCan,
+  linoNegrier: Negrier,
+  linoHaiti: Haiti,
+  linoCranLicra: CranLicra,
   outro: Outro,
 };
 
 const Segment: React.FC<{ segment: Segment; voix: VoixTrouvees }> = ({ segment, voix }) => {
-  if (segment.type === "annonce") return <Annonce artiste={segment.artiste} />;
-  if (segment.type === "pause") {
+  if (segment.type === "extrait") {
     return (
       <>
-        <ExtraitPause artiste={segment.artiste} marqueur={segment.marqueur} />
-        {extraitOriginal(segment.marqueur) ? <ExtraitAudio marqueur={segment.marqueur} /> : null}
+        <ExtraitPause artiste={segment.artiste} marqueur={segment.marqueur} annonce={segment.annonce} />
+        {extraitOriginal(segment.marqueur) ? (
+          <Sequence
+            name={`Son ${segment.marqueur}`}
+            from={segment.annonce}
+            durationInFrames={segment.durationInFrames - segment.annonce}
+            layout="none"
+          >
+            <ExtraitAudio marqueur={segment.marqueur} />
+          </Sequence>
+        ) : null}
       </>
     );
   }
@@ -65,7 +73,9 @@ const Segment: React.FC<{ segment: Segment; voix: VoixTrouvees }> = ({ segment, 
 };
 
 export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles, voix }) => {
-  const { segments, flashes, dureeFlash, durationInFrames } = construireTimeline(dureesVoix(voix));
+  const { segments, flashes, chevauchement, dureeFlash, durationInFrames } = construireTimeline(
+    dureesVoix(voix),
+  );
   const outro = segments[segments.length - 1];
 
   return (
@@ -73,9 +83,15 @@ export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles, voix }) 
       <AbsoluteFill style={{ backgroundColor: "#000" }}>
         <Filtres />
 
-        {segments.map((s) => (
+        {segments.map((s, i) => (
           <Sequence key={s.id} name={s.name} from={s.from} durationInFrames={s.durationInFrames} premountFor={30}>
-            <Segment segment={s} voix={voix} />
+            {i === 0 ? (
+              <Segment segment={s} voix={voix} />
+            ) : (
+              <EntreeDechiree duree={chevauchement} graine={s.id}>
+                <Segment segment={s} voix={voix} />
+              </EntreeDechiree>
+            )}
           </Sequence>
         ))}
 

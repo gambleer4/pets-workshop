@@ -1,6 +1,7 @@
 import { Explication } from "./Explication";
 
-// Une scène par explication. Aucun texte ici ne cite les paroles du morceau.
+// Une scène par explication, dans l'ordre du morceau (voir timeline.ts).
+// Aucun texte ici ne cite les paroles du morceau.
 // Les espaces insécables autour des guillemets gardent « et » collés à leur mot.
 
 export const Contexte: React.FC = () => (
@@ -25,8 +26,8 @@ export const AngleMort: React.FC = () => (
   <Explication
     temps={[
       {
-        photo: { personne: "kery", mouvement: "gauche" },
-        surtitre: "Kery James",
+        photo: { personne: "youssoupha", mouvement: "gauche" },
+        surtitre: "Youssoupha",
         titre: "L'angle mort",
         texte: "Invisible dans le récit national. Et éliminé s'il ose défier le système.",
       },
@@ -51,8 +52,8 @@ export const TamTam: React.FC = () => (
   <Explication
     temps={[
       {
-        photo: { personne: "kery", mouvement: "zoom-arriere" },
-        surtitre: "Kery James",
+        photo: { personne: "lino", mouvement: "zoom-arriere" },
+        surtitre: "Kery James & Lino",
         titre: "Le tam-tam contre le rossignol",
         texte: "On méprise le rap comme un bruit primitif. Pourtant, c'est lui qui prend le prime time.",
       },
@@ -64,8 +65,8 @@ export const Negrier: React.FC = () => (
   <Explication
     temps={[
       {
-        photo: { personne: "youssoupha", mouvement: "droite" },
-        surtitre: "Youssoupha",
+        photo: { personne: "lino", mouvement: "droite" },
+        surtitre: "Lino",
         titre: "Nègre / négrier",
         texte: "Deux mots presque identiques. Le vrai sauvage, c'est celui qui faisait commerce des hommes.",
       },
@@ -77,8 +78,8 @@ export const Haiti: React.FC = () => (
   <Explication
     temps={[
       {
-        photo: { personne: "youssoupha", mouvement: "zoom-avant" },
-        surtitre: "Youssoupha",
+        photo: { personne: "lino", mouvement: "zoom-avant" },
+        surtitre: "Lino",
         titre: "Haïti, 1804",
         texte: "La première république noire de l'histoire, née d'une révolte d'esclaves.",
       },
@@ -90,8 +91,8 @@ export const CranLicra: React.FC = () => (
   <Explication
     temps={[
       {
-        photo: { personne: "youssoupha", mouvement: "gauche" },
-        surtitre: "Youssoupha",
+        photo: { personne: "lino", mouvement: "gauche" },
+        surtitre: "Lino",
         titre: "Ni le CRAN, ni la LICRA",
         texte: "Pas besoin d'institution pour parler à sa place : il répond en son propre nom.",
       },
@@ -106,7 +107,7 @@ export const RosaParks: React.FC = () => (
         photo: { personne: "rosaParks", mouvement: "zoom-avant" },
         surtitre: "Rosa Parks · Montgomery, 1955",
         titre: "Prendre la place qu'on vous refuse",
-        texte: "Elle reste assise. Lino fait pareil : le rap s'installe là où on ne veut pas de lui.",
+        texte: "Elle reste assise. Kery James fait pareil : le rap s'installe là où on ne veut pas de lui.",
       },
     ]}
   />

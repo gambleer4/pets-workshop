@@ -3,7 +3,8 @@
 Vidéo verticale (1080×1920, 30 fps) réalisée avec [Remotion](https://www.remotion.dev) (React + TypeScript), qui décrypte le morceau « Musique nègre » de Kery James, Lino et Youssoupha (2016, album *Mouhammad Alix*).
 
 Direction artistique : noir et blanc strict, façon collage photocopié / fanzine punk.
-Photos seuillées et granuleuses, cartes de papier déchiré inclinées, titres sur étiquettes déchirées révélés mot par mot, poussière, vignettage permanent, flashs blancs entre les sections.
+Photos seuillées et granuleuses, cartes de papier déchiré inclinées, titres sur étiquettes déchirées révélés mot par mot, poussière, vignettage permanent.
+Les scènes s'enchaînent par une transition « papier déchiré » (la suivante recouvre la précédente), avec un flash blanc aux changements de section.
 
 ## Démarrer
 
@@ -61,24 +62,26 @@ Les volumes et le calage se règlent dans `FOND_MUSICAL` (`src/config.ts`).
 **Extraits rappés** : tirés du morceau original, `public/audio/musique-negre.m4a` (piste audio du clip, 5 min 21).
 Chaque pause joue le passage correspondant, repéré par transcription automatique et coupé au mot près, avec un fondu très court aux deux bouts. Pendant un extrait, l'instrumentale se coupe.
 
-| Extrait | Passage | Dans le morceau original |
-| --- | --- | --- |
-| `EXTRAIT_KERY_1` | l'angle mort | 1:42,9 → 1:48,2 |
-| `EXTRAIT_KERY_2` | le bruit et l'odeur | 1:48,6 → 1:55,5 |
-| `EXTRAIT_KERY_3` | tam-tam, rossignol, prime time | 3:18,5 → 3:23,4 |
-| `EXTRAIT_YOUSS_1` | nègre / négrier | 3:54,9 → 3:58,3 |
-| `EXTRAIT_YOUSS_2` | Haïti | 4:30,3 → 4:33,9 |
-| `EXTRAIT_YOUSS_3` | ni le CRAN ni la LICRA | 4:33,8 → 4:37,8 |
-| `EXTRAIT_LINO_1` | Rosa Parks | 1:06,9 → 1:10,5 |
-| `EXTRAIT_LINO_2` | Toussaint Louverture | 1:10,5 → 1:14,3 |
-| `EXTRAIT_REFRAIN` | « pas calibré pour la FM », « Yes we can » | 3:25,8 → 3:35,8 |
+La vidéo suit l'ordre du morceau. Qui rappe quoi a été vérifié à l'écoute.
+
+| Extrait | Rappeur | Passage | Dans le morceau original |
+| --- | --- | --- | --- |
+| `EXTRAIT_KERY_1` | Kery James | Rosa Parks | 1:06,9 → 1:10,5 |
+| `EXTRAIT_KERY_2` | Kery James | Toussaint Louverture | 1:10,5 → 1:14,3 |
+| `EXTRAIT_YOUSS_1` | Youssoupha | l'angle mort | 1:42,9 → 1:48,2 |
+| `EXTRAIT_YOUSS_2` | Youssoupha | le bruit et l'odeur | 1:48,6 → 1:55,5 |
+| `EXTRAIT_KERY_LINO` | Kery James et Lino (passe-passe) | tam-tam, rossignol, prime time | 3:18,5 → 3:23,4 |
+| `EXTRAIT_REFRAIN` | les trois | « pas calibré pour la FM », « Yes we can » | 3:25,8 → 3:35,8 |
+| `EXTRAIT_LINO_1` | Lino | nègre / négrier | 3:54,9 → 3:58,3 |
+| `EXTRAIT_LINO_2` | Lino | Haïti | 4:30,3 → 4:33,9 |
+| `EXTRAIT_LINO_3` | Lino | ni le CRAN ni la LICRA | 4:33,8 → 4:37,8 |
 
 Pour décaler un extrait, modifie son `debut` (en secondes dans le morceau) et sa `duree` dans `EXTRAITS` (`src/config.ts`). Le volume se règle avec `MORCEAU_ORIGINAL_VOLUME`.
 Un extrait remis à `debut: null` laisse l'instrumentale à sa place.
 
 ## Extraits du morceau
 
-Chaque extrait est précédé d'une annonce (« KERY JAMES : ») puis d'une scène PAUSE : la photo de l'artiste en zoom lent, avec une zone vide en bas pour la phrase que tu ajoutes au montage.
+Chaque extrait est un seul plan : l'annonce (« KERY JAMES : ») sur la photo assombrie, puis la photo s'éclaire et zoome lentement pendant que le rappeur parle. La zone du bas reste vide pour la phrase que tu ajoutes au montage.
 Dans le Studio, cette zone est entourée de pointillés avec le nom du marqueur. Les pointillés n'apparaissent pas dans le MP4.
 
 Chaque pause est une séquence nommée (`EXTRAIT_KERY_1`, etc.) visible dans la timeline du Studio.
@@ -89,17 +92,17 @@ Chaque pause est une séquence nommée (`EXTRAIT_KERY_1`, etc.) visible dans la 
 
 | Marqueur | Début | Fin | Durée | Images |
 | --- | --- | --- | --- | --- |
-| `EXTRAIT_KERY_1` | 00:00:16:24 | 00:00:22:03 | 5.30 s | 504 → 662 |
-| `EXTRAIT_KERY_2` | 00:00:37:27 | 00:00:44:24 | 6.90 s | 1137 → 1343 |
-| `EXTRAIT_KERY_3` | 00:00:54:18 | 00:00:59:15 | 4.90 s | 1638 → 1784 |
-| `EXTRAIT_YOUSS_1` | 00:01:00:24 | 00:01:04:08 | 3.47 s | 1824 → 1927 |
-| `EXTRAIT_YOUSS_2` | 00:01:13:02 | 00:01:16:20 | 3.60 s | 2192 → 2299 |
-| `EXTRAIT_YOUSS_3` | 00:01:24:14 | 00:01:28:14 | 4.00 s | 2534 → 2653 |
-| `EXTRAIT_LINO_1` | 00:01:36:23 | 00:01:40:11 | 3.60 s | 2903 → 3010 |
-| `EXTRAIT_LINO_2` | 00:01:49:20 | 00:01:53:14 | 3.80 s | 3290 → 3403 |
-| `EXTRAIT_REFRAIN` | 00:02:02:23 | 00:02:12:23 | 10.00 s | 3683 → 3982 |
+| `EXTRAIT_KERY_1` | 00:00:16:02 | 00:00:19:20 | 3.60 s | 482 → 589 |
+| `EXTRAIT_KERY_2` | 00:00:30:07 | 00:00:34:01 | 3.80 s | 907 → 1020 |
+| `EXTRAIT_YOUSS_1` | 00:00:42:18 | 00:00:47:27 | 5.30 s | 1278 → 1436 |
+| `EXTRAIT_YOUSS_2` | 00:01:03:03 | 00:01:10:00 | 6.90 s | 1893 → 2099 |
+| `EXTRAIT_KERY_LINO` | 00:01:21:17 | 00:01:26:14 | 4.90 s | 2447 → 2593 |
+| `EXTRAIT_REFRAIN` | 00:01:27:12 | 00:01:37:12 | 10.00 s | 2622 → 2921 |
+| `EXTRAIT_LINO_1` | 00:01:46:14 | 00:01:49:28 | 3.47 s | 3194 → 3297 |
+| `EXTRAIT_LINO_2` | 00:01:58:00 | 00:02:01:18 | 3.60 s | 3540 → 3647 |
+| `EXTRAIT_LINO_3` | 00:02:08:20 | 00:02:12:20 | 4.00 s | 3860 → 3979 |
 
-Durée totale : 00:02:28:08 (148.3 s, 4448 images à 30 fps). Timecodes au format HH:MM:SS:images.
+Durée totale : 00:02:25:28 (145.9 s, 4378 images à 30 fps). Timecodes au format HH:MM:SS:images.
 
 <!-- TIMECODES:FIN -->
 
@@ -112,6 +115,7 @@ Toutes les durées sont dans `src/config.ts`, en secondes :
 
 - `EXTRAITS` : durée de chaque pause. Cale-la sur la longueur réelle de l'extrait.
 - `DUREE_ANNONCE` : durée des annonces « ARTISTE : ».
+- `DUREE_TRANSITION` : durée de la transition « papier déchiré » entre deux scènes.
 - `DUREES_SCENES` : durée de chaque scène d'explication, de l'intro et de l'outro.
 - `DUREE_FLASH` : durée des flashs blancs entre sections.
 
@@ -133,14 +137,16 @@ src/
     Intro.tsx            titre lettre par lettre puis les trois artistes
     explications.tsx     une scène par explication (contexte, angle mort, Chirac…)
     Explication.tsx      mise en page commune : photo(s) collée(s) + texte
-    Annonce.tsx          « KERY JAMES : » avant chaque extrait
-    ExtraitPause.tsx     <ExtraitPause artiste="..." /> pendant chaque extrait
+    Annonce.tsx          étiquette « KERY JAMES : » au début de chaque extrait
+    ExtraitPause.tsx     <ExtraitPause artiste="..." /> : annonce puis extrait, en un plan
     Outro.tsx            les trois artistes et « Retourner l'insulte en étendard »
   components/
     Photo.tsx            photo traitée, cadre de remplacement, carte de collage
     Filtres.tsx          filtres SVG « photocopie » et « encre »
     Texte.tsx            mot par mot, lettre par lettre, masques, étiquettes déchirées
     Overlays.tsx         vignettage, flash, poussière, fondu au noir
+    Transition.tsx       transition « papier déchiré » entre deux scènes
+    PortraitArtiste.tsx  photo de l'artiste (ou collage duo / trio) des extraits
     Sons.tsx             fond musical, voix off, extraits du morceau original
     voix.ts              détection et durée des enregistrements de voix off
 scripts/timecodes.mts    génère les timecodes du README et les marqueurs

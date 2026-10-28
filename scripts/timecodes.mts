@@ -34,7 +34,12 @@ const srt = (frame: number) => {
   return `${pad(Math.floor(ms / 3600000))}:${pad(Math.floor(ms / 60000) % 60)}:${pad(Math.floor(ms / 1000) % 60)},${pad(ms % 1000, 3)}`;
 };
 
-const pauses = segments.filter((s) => s.type === "pause");
+// Un extrait commence après son annonce, dans le même segment.
+const pauses = segments.flatMap((s) =>
+  s.type === "extrait"
+    ? [{ name: s.name, from: s.from + s.annonce, durationInFrames: s.durationInFrames - s.annonce }]
+    : [],
+);
 
 const tableau = [
   "| Marqueur | Début | Fin | Durée | Images |",

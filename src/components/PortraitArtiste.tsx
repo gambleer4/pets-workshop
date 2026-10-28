@@ -5,7 +5,7 @@ import { Photo } from "./Photo";
 
 // Photo de l'artiste pour les annonces et les pauses : en haut de l'écran,
 // fondue dans le noir, pour laisser le bas libre pour le texte.
-// Pour le refrain, les trois artistes en cartes collées avec un zoom lent.
+// Pour le refrain et la passe-passe, les artistes en cartes collées avec un zoom lent.
 export const PortraitArtiste: React.FC<{
   artiste: ArtisteId;
   luminosite: number;
@@ -14,7 +14,7 @@ export const PortraitArtiste: React.FC<{
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
-  if (artiste === "trio") {
+  if (artiste === "trio" || artiste === "duo") {
     return (
       <AbsoluteFill
         style={{
@@ -26,7 +26,7 @@ export const PortraitArtiste: React.FC<{
         }}
       >
         <div style={{ position: "absolute", top: 260, left: 0 }}>
-          <CollageTrio noms={false} entree={entree} />
+          <CollageTrio artistes={artiste} noms={false} entree={entree} />
         </div>
       </AbsoluteFill>
     );

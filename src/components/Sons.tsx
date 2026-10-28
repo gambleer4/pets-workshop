@@ -1,4 +1,5 @@
 import { Audio } from "@remotion/media";
+import { useMemo } from "react";
 import { interpolate, Sequence, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import {
   EXTRAITS,
@@ -11,49 +12,71 @@ import {
 import type { Segment } from "../timeline";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const RAMPE = 8;
+// Largeur (en images) du lissage des changements de volume de l'instrumentale.
+const LISSAGE = 16;
 
 // Vrai si cet extrait est joué depuis le morceau original.
 export const extraitOriginal = (marqueur: MarqueurExtrait) =>
   MORCEAU_ORIGINAL !== null && EXTRAITS[marqueur].debut !== null;
 
-// Instrumentale sous toute la vidéo. Le volume suit les scènes :
-// bas sous la voix off, plus fort sur les annonces et les pauses,
-// coupé pendant un extrait du morceau original.
+// Volume de l'instrumentale pour chaque image de la vidéo : bas sous la voix
+// off, plus fort sur les annonces, coupé pendant un extrait du morceau
+// original (fort sinon). Les paliers sont ensuite lissés pour éviter les à-coups.
+const courbeVolume = (segments: Segment[], total: number, fond: NonNullable<typeof FOND_MUSICAL>) => {
+  const cible = new Array<number>(total).fill(fond.volumeSousVoix);
+  const rempli = new Array<boolean>(total).fill(false);
+  for (const s of segments) {
+    for (let f = s.from; f < Math.min(total, s.from + s.durationInFrames); f++) {
+      if (rempli[f]) continue; // Pendant une transition, le segment qui finit garde la main.
+      rempli[f] = true;
+      if (s.type === "scene") continue;
+      if (f < s.from + s.annonce) cible[f] = fond.volumeAnnonce;
+      else cible[f] = extraitOriginal(s.marqueur) ? 0 : fond.volumePause;
+    }
+    // L'instrumentale doit être éteinte quand le rappeur commence : on anticipe.
+    if (s.type === "extrait" && extraitOriginal(s.marqueur)) {
+      const debut = s.from + s.annonce;
+      for (let f = Math.max(0, debut - LISSAGE / 2); f < debut; f++) cible[f] = 0;
+    }
+  }
+  const lisse = new Array<number>(total);
+  for (let f = 0; f < total; f++) {
+    let somme = 0;
+    let n = 0;
+    for (let k = f - LISSAGE / 2; k <= f + LISSAGE / 2; k++) {
+      if (k < 0 || k >= total) continue;
+      somme += cible[k];
+      n++;
+    }
+    lisse[f] = somme / n;
+  }
+  return lisse;
+};
+
+// Instrumentale sous toute la vidéo, calée pour que `calage` tombe au début
+// du premier extrait.
 export const FondMusical: React.FC<{ segments: Segment[] }> = ({ segments }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
+  const courbe = useMemo(
+    () => (FOND_MUSICAL ? courbeVolume(segments, durationInFrames, FOND_MUSICAL) : []),
+    [segments, durationInFrames],
+  );
   if (!FOND_MUSICAL) return null;
-  const fond = FOND_MUSICAL;
 
-  const cible = (s: Segment) => {
-    if (s.type === "pause") return extraitOriginal(s.marqueur) ? 0 : fond.volumePause;
-    if (s.type === "annonce") return fond.volumeAnnonce;
-    return fond.volumeSousVoix;
-  };
-
-  // Le volume rejoint celui du segment suivant pendant les dernières images du segment.
-  const i = Math.max(0, segments.findIndex((s) => frame < s.from + s.durationInFrames));
-  const actuel = segments[i];
-  const suivant = segments[i + 1];
-  const fin = actuel.from + actuel.durationInFrames;
-  const volume = suivant
-    ? interpolate(frame, [fin - RAMPE, fin], [cible(actuel), cible(suivant)], clamp)
-    : cible(actuel);
   const fondus =
     interpolate(frame, [0, 15], [0, 1], clamp) *
     interpolate(frame, [durationInFrames - 45, durationInFrames - 1], [1, 0], clamp);
-
-  // Décalage pour que `calage` tombe au début du premier extrait.
-  const premierExtrait = segments.find((s) => s.type === "pause");
-  const decalage = Math.round(fond.calage * fps) - (premierExtrait?.from ?? 0);
+  const premierExtrait = segments.find((s) => s.type === "extrait");
+  const debutExtrait = premierExtrait?.type === "extrait" ? premierExtrait.from + premierExtrait.annonce : 0;
+  const decalage = Math.round(FOND_MUSICAL.calage * fps) - debutExtrait;
 
   return (
     <Sequence name="Fond musical" from={Math.max(0, -decalage)} layout="none">
       <Audio
-        src={staticFile(fond.fichier)}
+        src={staticFile(FOND_MUSICAL.fichier)}
         trimBefore={Math.max(0, decalage)}
-        volume={volume * fondus}
+        volume={(courbe[frame] ?? 0) * fondus}
       />
     </Sequence>
   );
@@ -70,7 +93,8 @@ export const VoixOff: React.FC<{ fichier: string }> = ({ fichier }) => {
   );
 };
 
-// Extrait du morceau original pendant une pause, avec fondus courts.
+// Extrait du morceau original pendant une pause : attaque très courte pour
+// ne pas manger le premier mot, sortie un peu plus douce.
 export const ExtraitAudio: React.FC<{ marqueur: MarqueurExtrait }> = ({ marqueur }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -84,7 +108,7 @@ export const ExtraitAudio: React.FC<{ marqueur: MarqueurExtrait }> = ({ marqueur
       trimBefore={Math.round(debut * fps)}
       volume={
         MORCEAU_ORIGINAL_VOLUME *
-        interpolate(frame, [0, 4, durationInFrames - 6, durationInFrames - 1], [0, 1, 1, 0], clamp)
+        interpolate(frame, [0, 3, durationInFrames - 9, durationInFrames - 1], [0, 1, 1, 0], clamp)
       }
     />
   );

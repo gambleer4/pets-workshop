@@ -4,6 +4,7 @@
 import {
   DUREE_ANNONCE,
   DUREE_FLASH,
+  DUREE_TRANSITION,
   DUREES_SCENES,
   EXTRAITS,
   FPS,
@@ -18,39 +19,43 @@ export type Section =
   | "contexte"
   | "kery"
   | "youssoupha"
-  | "lino"
+  | "passePasse"
   | "refrain"
+  | "lino"
   | "outro";
 
 type Etape =
   | { section: Section; scene: SceneId }
   | { section: Section; extrait: MarqueurExtrait };
 
+// La vidéo suit l'ordre du morceau : couplet de Kery James, couplet de
+// Youssoupha, passe-passe Kery James / Lino, refrain, couplet de Lino.
 const STRUCTURE: Etape[] = [
   { section: "intro", scene: "intro" },
   { section: "contexte", scene: "contexte" },
 
   { section: "kery", extrait: "EXTRAIT_KERY_1" },
-  { section: "kery", scene: "keryAngleMort" },
-  { section: "kery", scene: "keryChirac" },
+  { section: "kery", scene: "keryRosaParks" },
   { section: "kery", extrait: "EXTRAIT_KERY_2" },
-  { section: "kery", scene: "keryTamTam" },
-  { section: "kery", extrait: "EXTRAIT_KERY_3" },
+  { section: "kery", scene: "keryLouverture" },
 
   { section: "youssoupha", extrait: "EXTRAIT_YOUSS_1" },
-  { section: "youssoupha", scene: "youssNegrier" },
+  { section: "youssoupha", scene: "youssAngleMort" },
+  { section: "youssoupha", scene: "youssChirac" },
   { section: "youssoupha", extrait: "EXTRAIT_YOUSS_2" },
-  { section: "youssoupha", scene: "youssHaiti" },
-  { section: "youssoupha", extrait: "EXTRAIT_YOUSS_3" },
-  { section: "youssoupha", scene: "youssCranLicra" },
 
-  { section: "lino", extrait: "EXTRAIT_LINO_1" },
-  { section: "lino", scene: "linoRosaParks" },
-  { section: "lino", extrait: "EXTRAIT_LINO_2" },
-  { section: "lino", scene: "linoLouverture" },
+  { section: "passePasse", scene: "duoTamTam" },
+  { section: "passePasse", extrait: "EXTRAIT_KERY_LINO" },
 
   { section: "refrain", extrait: "EXTRAIT_REFRAIN" },
   { section: "refrain", scene: "refrainObama" },
+
+  { section: "lino", extrait: "EXTRAIT_LINO_1" },
+  { section: "lino", scene: "linoNegrier" },
+  { section: "lino", extrait: "EXTRAIT_LINO_2" },
+  { section: "lino", scene: "linoHaiti" },
+  { section: "lino", extrait: "EXTRAIT_LINO_3" },
+  { section: "lino", scene: "linoCranLicra" },
 
   { section: "outro", scene: "outro" },
 ];
@@ -63,10 +68,11 @@ type Base = {
   durationInFrames: number;
 };
 
+// Un segment « extrait » contient l'annonce puis l'extrait, dans le même plan.
+// L'extrait commence à `from + annonce`.
 export type Segment =
   | (Base & { type: "scene"; scene: SceneId })
-  | (Base & { type: "annonce"; artiste: ArtisteId; marqueur: MarqueurExtrait })
-  | (Base & { type: "pause"; artiste: ArtisteId; marqueur: MarqueurExtrait });
+  | (Base & { type: "extrait"; artiste: ArtisteId; marqueur: MarqueurExtrait; annonce: number });
 
 export const secondes = (s: number) => Math.round(s * FPS);
 
@@ -81,10 +87,14 @@ const dureeScene = (scene: SceneId, dureesVoix: DureesVoix) => {
 };
 
 export const construireTimeline = (dureesVoix: DureesVoix = {}) => {
+  const chevauchement = secondes(DUREE_TRANSITION);
   const segments: Segment[] = [];
   let from = 0;
 
   for (const etape of STRUCTURE) {
+    // Chaque segment commence pendant la fin du précédent : c'est la transition.
+    const debut = segments.length === 0 ? 0 : from - chevauchement;
+
     if ("scene" in etape) {
       const durationInFrames = dureeScene(etape.scene, dureesVoix);
       segments.push({
@@ -93,49 +103,39 @@ export const construireTimeline = (dureesVoix: DureesVoix = {}) => {
         name: etape.scene,
         scene: etape.scene,
         section: etape.section,
-        from,
+        from: debut,
         durationInFrames,
       });
-      from += durationInFrames;
+      from = debut + durationInFrames;
       continue;
     }
 
     const { artiste, duree } = EXTRAITS[etape.extrait];
     const annonce = secondes(DUREE_ANNONCE);
+    const durationInFrames = annonce + secondes(duree);
     segments.push({
-      type: "annonce",
-      id: `annonce-${etape.extrait}`,
-      name: `ANNONCE ${etape.extrait}`,
-      artiste,
-      marqueur: etape.extrait,
-      section: etape.section,
-      from,
-      durationInFrames: annonce,
-    });
-    from += annonce;
-
-    const pause = secondes(duree);
-    segments.push({
-      type: "pause",
+      type: "extrait",
       id: etape.extrait,
       name: etape.extrait,
       artiste,
       marqueur: etape.extrait,
+      annonce,
       section: etape.section,
-      from,
-      durationInFrames: pause,
+      from: debut,
+      durationInFrames,
     });
-    from += pause;
+    from = debut + durationInFrames;
   }
 
   // Un flash au début de chaque nouvelle section (sauf la première).
   const flashes = segments
     .filter((s, i) => i > 0 && s.section !== segments[i - 1].section)
-    .map((s) => Math.max(0, s.from - 1));
+    .map((s) => s.from + Math.floor(chevauchement / 2));
 
   return {
     segments,
     flashes,
+    chevauchement,
     dureeFlash: secondes(DUREE_FLASH),
     durationInFrames: from,
   };

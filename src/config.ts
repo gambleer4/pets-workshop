@@ -30,13 +30,14 @@ export const PERSONNES: Record<
 
 export type PersonneId = keyof typeof PERSONNES;
 
-// "trio" = les trois artistes côte à côte (utilisé pour le refrain).
-export type ArtisteId = "kery" | "lino" | "youssoupha" | "trio";
+// "duo" = Kery James et Lino (leur passe-passe), "trio" = les trois (refrain).
+export type ArtisteId = "kery" | "lino" | "youssoupha" | "duo" | "trio";
 
 export const NOMS_ANNONCE: Record<ArtisteId, string> = {
   kery: "KERY JAMES",
   lino: "LINO",
   youssoupha: "YOUSSOUPHA",
+  duo: "KERY JAMES & LINO",
   trio: "REFRAIN",
 };
 
@@ -51,21 +52,23 @@ type Extrait = { artiste: ArtisteId; duree: number; debut: number | null };
 const extraits = {
   // Morceau original (musique-negre.m4a) : début et durée de chaque passage,
   // repérés par transcription automatique puis coupés au mot près.
-  EXTRAIT_KERY_1: { artiste: "kery", duree: 5.3, debut: 102.9 }, // l'angle mort
-  EXTRAIT_KERY_2: { artiste: "kery", duree: 6.9, debut: 108.6 }, // le bruit et l'odeur
-  EXTRAIT_KERY_3: { artiste: "kery", duree: 4.9, debut: 198.45 }, // tam-tam, rossignol, prime time
-  EXTRAIT_YOUSS_1: { artiste: "youssoupha", duree: 3.45, debut: 234.85 }, // nègre / négrier
-  EXTRAIT_YOUSS_2: { artiste: "youssoupha", duree: 3.6, debut: 270.25 }, // Haïti
-  EXTRAIT_YOUSS_3: { artiste: "youssoupha", duree: 4, debut: 273.8 }, // ni le CRAN ni la LICRA
-  EXTRAIT_LINO_1: { artiste: "lino", duree: 3.6, debut: 66.9 }, // Rosa Parks
-  EXTRAIT_LINO_2: { artiste: "lino", duree: 3.8, debut: 70.45 }, // Toussaint Louverture
+  // Dans l'ordre du morceau ; qui rappe quoi vérifié à l'écoute.
+  EXTRAIT_KERY_1: { artiste: "kery", duree: 3.6, debut: 66.9 }, // Rosa Parks
+  EXTRAIT_KERY_2: { artiste: "kery", duree: 3.8, debut: 70.45 }, // Toussaint Louverture
+  EXTRAIT_YOUSS_1: { artiste: "youssoupha", duree: 5.3, debut: 102.9 }, // l'angle mort
+  EXTRAIT_YOUSS_2: { artiste: "youssoupha", duree: 6.9, debut: 108.6 }, // le bruit et l'odeur
+  EXTRAIT_KERY_LINO: { artiste: "duo", duree: 4.9, debut: 198.45 }, // tam-tam, rossignol, prime time
   EXTRAIT_REFRAIN: { artiste: "trio", duree: 10, debut: 205.8 }, // « pas calibré pour la FM », « Yes we can »
+  EXTRAIT_LINO_1: { artiste: "lino", duree: 3.45, debut: 234.85 }, // nègre / négrier
+  EXTRAIT_LINO_2: { artiste: "lino", duree: 3.6, debut: 270.25 }, // Haïti
+  EXTRAIT_LINO_3: { artiste: "lino", duree: 4, debut: 273.8 }, // ni le CRAN ni la LICRA
 } satisfies Record<string, Extrait>;
 
 export type MarqueurExtrait = keyof typeof extraits;
 export const EXTRAITS: Record<MarqueurExtrait, Extrait> = extraits;
 
-// Annonce « KERY JAMES : » affichée juste avant chaque extrait.
+// Annonce « KERY JAMES : » affichée sur la photo juste avant chaque extrait,
+// dans le même plan que l'extrait.
 export const DUREE_ANNONCE = 1.3;
 
 // --- Scènes ----------------------------------------------------------------
@@ -76,21 +79,25 @@ export const DUREE_ANNONCE = 1.3;
 export const DUREES_SCENES = {
   intro: 6,
   contexte: 9.5,
-  keryAngleMort: 7,
-  keryChirac: 7.5,
-  keryTamTam: 8.5,
-  youssNegrier: 7.5,
-  youssHaiti: 6.5,
-  youssCranLicra: 7,
-  linoRosaParks: 8,
-  linoLouverture: 8,
+  keryRosaParks: 10,
+  keryLouverture: 8,
+  youssAngleMort: 7.5,
+  youssChirac: 7.5,
+  duoTamTam: 11,
   refrainObama: 8.5,
+  linoNegrier: 7.5,
+  linoHaiti: 6.5,
+  linoCranLicra: 7,
   outro: 7,
 };
 
 export type SceneId = keyof typeof DUREES_SCENES;
 
-// Flash blanc entre deux sections (se superpose à la coupe, n'allonge pas la vidéo).
+// Transition « papier déchiré » entre deux scènes : la suivante recouvre la
+// précédente pendant ce temps (les deux se chevauchent).
+export const DUREE_TRANSITION = 0.35;
+
+// Flash blanc en plus, au changement de section (couplet, refrain…).
 export const DUREE_FLASH = 0.25;
 
 // --- Voix off --------------------------------------------------------------
