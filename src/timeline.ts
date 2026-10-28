@@ -7,6 +7,7 @@ import {
   DUREES_SCENES,
   EXTRAITS,
   FPS,
+  VOIX_OFF,
   type ArtisteId,
   type MarqueurExtrait,
   type SceneId,
@@ -69,13 +70,23 @@ export type Segment =
 
 export const secondes = (s: number) => Math.round(s * FPS);
 
-export const construireTimeline = () => {
+// Durée (en secondes) des enregistrements de voix off trouvés, par scène.
+export type DureesVoix = Partial<Record<SceneId, number>>;
+
+// Une scène dure au moins sa durée de config.ts, et assez pour contenir sa voix off.
+const dureeScene = (scene: SceneId, dureesVoix: DureesVoix) => {
+  const voix = dureesVoix[scene];
+  const avecVoix = voix === undefined ? 0 : VOIX_OFF.delai + voix + VOIX_OFF.marge;
+  return secondes(Math.max(DUREES_SCENES[scene], avecVoix));
+};
+
+export const construireTimeline = (dureesVoix: DureesVoix = {}) => {
   const segments: Segment[] = [];
   let from = 0;
 
   for (const etape of STRUCTURE) {
     if ("scene" in etape) {
-      const durationInFrames = secondes(DUREES_SCENES[etape.scene]);
+      const durationInFrames = dureeScene(etape.scene, dureesVoix);
       segments.push({
         type: "scene",
         id: etape.scene,

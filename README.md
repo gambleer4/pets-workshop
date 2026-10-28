@@ -18,7 +18,7 @@ npm run dev        # ouvre Remotion Studio pour prévisualiser
 npx remotion render MusiqueNegre out/musique-negre.mp4
 ```
 
-Raccourci : `npm run render`. Pour un rendu plus rapide sur une machine puissante, ajoute `--concurrency=8`.
+Raccourci : `npm run render`. Le rendu a besoin d'internet pour charger les polices Anton et Inter. Pour un rendu plus rapide sur une machine puissante, ajoute `--concurrency=8`.
 
 ## Photos
 
@@ -42,10 +42,29 @@ Le visage est cadré vers le haut de l'image (`objectPosition: 50% 30%` dans `sr
 
 ## Voix off
 
-1. Dépose ton fichier dans `public/audio/`, par exemple `public/audio/voix-off.mp3`.
-2. Dans `src/config.ts`, remplace `VOIX_OFF = null` par `VOIX_OFF = "audio/voix-off.mp3"`.
+Le texte à lire est dans [`TEXTE_VOIX_OFF.md`](TEXTE_VOIX_OFF.md), découpé en 12 scènes.
 
-La piste démarre au début de la vidéo. Le volume se règle avec `VOIX_OFF_VOLUME`.
+1. Enregistre un fichier par scène.
+2. Dépose-les dans `public/audio/voix/` avec le nom de la scène : `intro.mp3`, `contexte.mp3`, `keryAngleMort.mp3`… (formats acceptés : `.mp3`, `.m4a`, `.wav`).
+3. Recharge le Studio, puis lance `npm run timecodes` pour mettre à jour les timecodes ci-dessous.
+
+Chaque voix démarre 0,2 s après le début de sa scène. Si un enregistrement est plus long que la durée prévue dans `config.ts`, la scène s'allonge toute seule et tout ce qui suit se décale.
+Une scène sans enregistrement reste muette, avec seulement la musique.
+
+## Musique
+
+**Fond musical** : `public/audio/instrumental.mp3`, le remake instrumental de Kyziz (6 min, sans voix).
+Il joue sous toute la vidéo : bas sous la voix off, plus fort sur les annonces, fort pendant les pauses.
+Il est calé pour que le beat (46,3 s dans le fichier) tombe pile au début du premier extrait, même si les durées changent.
+Les volumes et le calage se règlent dans `FOND_MUSICAL` (`src/config.ts`).
+
+**Extraits rappés** : l'instrumentale ne contient pas les voix de Kery James, Lino et Youssoupha. Pour entendre les vrais extraits pendant les pauses :
+
+1. Dépose le morceau original dans `public/audio/`, par exemple `public/audio/musique-negre.mp3`.
+2. Dans `src/config.ts`, mets `MORCEAU_ORIGINAL = "audio/musique-negre.mp3"`.
+3. Pour chaque extrait de `EXTRAITS`, remplace `debut: null` par la seconde où commence le passage dans le morceau (par exemple `debut: 83.5` pour 1:23,5). Ajuste `duree` à la longueur du passage.
+
+Pendant un extrait du morceau original, l'instrumentale se coupe. Les extraits laissés à `null` gardent l'instrumentale.
 
 ## Extraits du morceau
 
@@ -60,17 +79,17 @@ Chaque pause est une séquence nommée (`EXTRAIT_KERY_1`, etc.) visible dans la 
 
 | Marqueur | Début | Fin | Durée | Images |
 | --- | --- | --- | --- | --- |
-| `EXTRAIT_KERY_1` | 00:00:13:24 | 00:00:18:24 | 5.00 s | 414 → 563 |
-| `EXTRAIT_KERY_2` | 00:00:29:18 | 00:00:34:18 | 5.00 s | 888 → 1037 |
-| `EXTRAIT_KERY_3` | 00:00:40:12 | 00:00:45:12 | 5.00 s | 1212 → 1361 |
-| `EXTRAIT_YOUSS_1` | 00:00:46:21 | 00:00:51:21 | 5.00 s | 1401 → 1550 |
-| `EXTRAIT_YOUSS_2` | 00:00:57:15 | 00:01:02:15 | 5.00 s | 1725 → 1874 |
-| `EXTRAIT_YOUSS_3` | 00:01:08:09 | 00:01:13:09 | 5.00 s | 2049 → 2198 |
-| `EXTRAIT_LINO_1` | 00:01:19:03 | 00:01:24:03 | 5.00 s | 2373 → 2522 |
-| `EXTRAIT_LINO_2` | 00:01:30:12 | 00:01:35:12 | 5.00 s | 2712 → 2861 |
-| `EXTRAIT_REFRAIN` | 00:01:43:21 | 00:01:48:21 | 5.00 s | 3111 → 3260 |
+| `EXTRAIT_KERY_1` | 00:00:16:24 | 00:00:21:24 | 5.00 s | 504 → 653 |
+| `EXTRAIT_KERY_2` | 00:00:37:18 | 00:00:42:18 | 5.00 s | 1128 → 1277 |
+| `EXTRAIT_KERY_3` | 00:00:52:12 | 00:00:57:12 | 5.00 s | 1572 → 1721 |
+| `EXTRAIT_YOUSS_1` | 00:00:58:21 | 00:01:03:21 | 5.00 s | 1761 → 1910 |
+| `EXTRAIT_YOUSS_2` | 00:01:12:15 | 00:01:17:15 | 5.00 s | 2175 → 2324 |
+| `EXTRAIT_YOUSS_3` | 00:01:25:09 | 00:01:30:09 | 5.00 s | 2559 → 2708 |
+| `EXTRAIT_LINO_1` | 00:01:38:18 | 00:01:43:18 | 5.00 s | 2958 → 3107 |
+| `EXTRAIT_LINO_2` | 00:01:52:27 | 00:01:57:27 | 5.00 s | 3387 → 3536 |
+| `EXTRAIT_REFRAIN` | 00:02:07:06 | 00:02:12:06 | 5.00 s | 3816 → 3965 |
 
-Durée totale : 00:01:59:21 (119.7 s, 3591 images à 30 fps). Timecodes au format HH:MM:SS:images.
+Durée totale : 00:02:27:21 (147.7 s, 4431 images à 30 fps). Timecodes au format HH:MM:SS:images.
 
 <!-- TIMECODES:FIN -->
 
@@ -96,7 +115,7 @@ npm run timecodes
 
 ```
 src/
-  config.ts              toutes les durées, les photos, la voix off
+  config.ts              toutes les durées, les photos, la voix off, la musique
   timeline.ts            ordre des scènes et calcul des positions
   Video.tsx              composition principale (scènes, flashs, grain, vignettage)
   Root.tsx               déclaration de la composition et vérification des photos
@@ -112,7 +131,9 @@ src/
     Filtres.tsx          filtres SVG « photocopie » et « encre »
     Texte.tsx            mot par mot, lettre par lettre, masques, étiquettes déchirées
     Overlays.tsx         vignettage, flash, poussière, fondu au noir
-scripts/timecodes.ts     génère les timecodes du README et les marqueurs
+    Sons.tsx             fond musical, voix off, extraits du morceau original
+    voix.ts              détection et durée des enregistrements de voix off
+scripts/timecodes.mts    génère les timecodes du README et les marqueurs
 ```
 
 Aucune parole du morceau n'est écrite dans la vidéo : seulement des textes explicatifs.

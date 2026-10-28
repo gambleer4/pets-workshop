@@ -1,10 +1,11 @@
-import { Audio } from "@remotion/media";
-import { AbsoluteFill, Sequence, staticFile } from "remotion";
-import { VOIX_OFF, VOIX_OFF_VOLUME, type SceneId } from "./config";
+import { AbsoluteFill, Sequence } from "remotion";
+import type { SceneId } from "./config";
 import { Filtres } from "./components/Filtres";
 import { Grain } from "./components/Grain";
 import { ImagesProvider, type ImagesDisponibles } from "./components/images";
 import { Flash, FonduAuNoir, Poussiere, Vignette } from "./components/Overlays";
+import { ExtraitAudio, extraitOriginal, FondMusical, VoixOff } from "./components/Sons";
+import { dureesVoix, type VoixTrouvees } from "./components/voix";
 import { Annonce } from "./scenes/Annonce";
 import { ExtraitPause } from "./scenes/ExtraitPause";
 import {
@@ -25,6 +26,7 @@ import { construireTimeline, type Segment } from "./timeline";
 
 export type VideoProps = {
   imagesDisponibles: ImagesDisponibles;
+  voix: VoixTrouvees;
 };
 
 const SCENES: Record<SceneId, React.FC> = {
@@ -42,15 +44,28 @@ const SCENES: Record<SceneId, React.FC> = {
   outro: Outro,
 };
 
-const Segment: React.FC<{ segment: Segment }> = ({ segment }) => {
+const Segment: React.FC<{ segment: Segment; voix: VoixTrouvees }> = ({ segment, voix }) => {
   if (segment.type === "annonce") return <Annonce artiste={segment.artiste} />;
-  if (segment.type === "pause") return <ExtraitPause artiste={segment.artiste} marqueur={segment.marqueur} />;
+  if (segment.type === "pause") {
+    return (
+      <>
+        <ExtraitPause artiste={segment.artiste} marqueur={segment.marqueur} />
+        {extraitOriginal(segment.marqueur) ? <ExtraitAudio marqueur={segment.marqueur} /> : null}
+      </>
+    );
+  }
   const Scene = SCENES[segment.scene];
-  return <Scene />;
+  const voixScene = voix[segment.scene];
+  return (
+    <>
+      <Scene />
+      {voixScene ? <VoixOff fichier={voixScene.fichier} /> : null}
+    </>
+  );
 };
 
-export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles }) => {
-  const { segments, flashes, dureeFlash, durationInFrames } = construireTimeline();
+export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles, voix }) => {
+  const { segments, flashes, dureeFlash, durationInFrames } = construireTimeline(dureesVoix(voix));
   const outro = segments[segments.length - 1];
 
   return (
@@ -60,7 +75,7 @@ export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles }) => {
 
         {segments.map((s) => (
           <Sequence key={s.id} name={s.name} from={s.from} durationInFrames={s.durationInFrames} premountFor={30}>
-            <Segment segment={s} />
+            <Segment segment={s} voix={voix} />
           </Sequence>
         ))}
 
@@ -78,7 +93,7 @@ export const MusiqueNegre: React.FC<VideoProps> = ({ imagesDisponibles }) => {
           <FonduAuNoir duree={45} />
         </Sequence>
 
-        {VOIX_OFF ? <Audio src={staticFile(VOIX_OFF)} volume={VOIX_OFF_VOLUME} /> : null}
+        <FondMusical segments={segments} />
       </AbsoluteFill>
     </ImagesProvider>
   );

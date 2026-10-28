@@ -6,3 +6,10 @@ dist
 # Ignore the output video from Git but not videos you import into src/.
 out
 build
+
+# Photos et sons : fichiers protégés par le droit d'auteur, à garder hors du dépôt.
+public/images/*
+!public/images/.gitkeep
+public/audio/**/*.mp3
+public/audio/**/*.m4a
+public/audio/**/*.wav

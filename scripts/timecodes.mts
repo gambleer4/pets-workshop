@@ -3,11 +3,24 @@
 // - écrit marqueurs/extraits.csv et marqueurs/extraits.srt pour le logiciel de montage.
 // Usage : npm run timecodes
 
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { FPS } from "../src/config";
-import { construireTimeline } from "../src/timeline";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { ALL_FORMATS, FilePathSource, Input } from "mediabunny";
+import { DUREES_SCENES, FPS, VOIX_OFF, type SceneId } from "../src/config";
+import { construireTimeline, type DureesVoix } from "../src/timeline";
 
-const { segments, durationInFrames } = construireTimeline();
+// Mesure les voix off déjà enregistrées dans public/audio/voix/.
+const dureesVoix: DureesVoix = {};
+for (const scene of Object.keys(DUREES_SCENES) as SceneId[]) {
+  const fichier = VOIX_OFF.formats
+    .map((f) => `public/${VOIX_OFF.dossier}/${scene}.${f}`)
+    .find((f) => existsSync(f));
+  if (!fichier) continue;
+  const input = new Input({ formats: ALL_FORMATS, source: new FilePathSource(fichier) });
+  dureesVoix[scene] = await input.computeDuration();
+  input.dispose();
+}
+
+const { segments, durationInFrames } = construireTimeline(dureesVoix);
 
 const timecode = (frame: number) => {
   const s = Math.floor(frame / FPS);
@@ -61,5 +74,6 @@ writeFileSync(
 );
 
 console.log(tableau);
+console.log(`\nVoix off trouvées : ${Object.keys(dureesVoix).length} / ${Object.keys(DUREES_SCENES).length}`);
 console.log("\nSegments :");
 for (const s of segments) console.log(`${timecode(s.from)}  ${String(s.from).padStart(5)}  ${s.name}`);
