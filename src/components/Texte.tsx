@@ -1,5 +1,6 @@
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { anton } from "./fonts";
+import { tremble } from "./Mouvement";
 import { bordDechire } from "./Photo";
 
 const SORTIE = Easing.bezier(0.16, 1, 0.3, 1);
@@ -124,8 +125,10 @@ export const Etiquette: React.FC<{
       style={{
         display: "inline-block",
         opacity: frame >= arrivee ? 1 : 0,
-        rotate: `${inclinaison}deg`,
-        scale: interpolate(frame, [arrivee, arrivee + 4], [1.3, 1], clamp),
+        // Léger tremblement image par image, comme un collage animé à la main.
+        rotate: `${inclinaison + tremble(graine, frame, 0.8)}deg`,
+        // Coup de tampon : trop grand, écrasé, puis en place.
+        scale: interpolate(frame, [arrivee, arrivee + 4, arrivee + 7], [1.3, 0.94, 1], clamp),
         filter: "url(#encre)",
       }}
     >

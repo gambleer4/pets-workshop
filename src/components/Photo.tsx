@@ -2,6 +2,7 @@ import { AbsoluteFill, Img, interpolate, random, useCurrentFrame, useVideoConfig
 import { PERSONNES, type PersonneId } from "../config";
 import { anton, GRIS, inter } from "./fonts";
 import { cheminImage, useImageDisponible } from "./images";
+import { tremble } from "./Mouvement";
 
 export type Mouvement = "zoom-avant" | "zoom-arriere" | "gauche" | "droite";
 
@@ -100,8 +101,26 @@ export const bordDechire = (graine: string, amplitude = 10, pas = 6) => {
   return `polygon(${[...haut, ...bas].join(", ")})`;
 };
 
-// Photo découpée et collée : cadre papier, bords déchirés, inclinaison,
-// arrivée en coup de tampon.
+// Bout de scotch translucide, aux extrémités dentelées.
+const Scotch: React.FC<{ graine: string; style: React.CSSProperties }> = ({ graine, style }) => (
+  <div
+    style={{
+      position: "absolute",
+      width: 170,
+      height: 46,
+      backgroundColor: "rgba(228,228,228,0.62)",
+      clipPath: `polygon(${[0, 1, 2, 3, 4]
+        .map((i) => `${random(`${graine}-g${i}`) * 6}% ${i * 25}%`)
+        .concat([4, 3, 2, 1, 0].map((i) => `${94 + random(`${graine}-d${i}`) * 6}% ${i * 25}%`))
+        .join(", ")})`,
+      filter: "url(#encre)",
+      ...style,
+    }}
+  />
+);
+
+// Photo découpée et collée : cadre papier, bords déchirés, scotch, inclinaison,
+// arrivée en coup de tampon, puis léger flottement et tremblement.
 export const CartePhoto: React.FC<{
   personne: PersonneId;
   x: number;
@@ -113,7 +132,9 @@ export const CartePhoto: React.FC<{
   arrivee?: number;
 }> = ({ personne, x, y, largeur, hauteur, inclinaison, mouvement, arrivee = 0 }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const visible = frame >= arrivee;
+  const flottement = Math.sin(((frame - arrivee) / fps) * 1.3 + x) * 7;
 
   return (
     <div
@@ -124,17 +145,30 @@ export const CartePhoto: React.FC<{
         width: largeur,
         height: hauteur,
         opacity: visible ? 1 : 0,
-        rotate: `${interpolate(frame, [arrivee, arrivee + 5], [inclinaison * 2.2, inclinaison], clamp)}deg`,
-        scale: interpolate(frame, [arrivee, arrivee + 5], [1.25, 1], clamp),
-        backgroundColor: "#d8d8d8",
-        padding: 12,
-        clipPath: bordDechire(personne, 12),
-        filter: "url(#encre)",
+        translate: `0px ${flottement}px`,
+        rotate: `${
+          interpolate(frame, [arrivee, arrivee + 5], [inclinaison * 2.2, inclinaison], clamp) +
+          tremble(personne, frame, 0.35)
+        }deg`,
+        scale: interpolate(frame, [arrivee, arrivee + 4, arrivee + 7], [1.25, 0.97, 1], clamp),
       }}
     >
-      <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
-        <Photo personne={personne} mouvement={mouvement} bords="brut" />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "#d8d8d8",
+          padding: 12,
+          clipPath: bordDechire(personne, 12),
+          filter: "url(#encre)",
+        }}
+      >
+        <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+          <Photo personne={personne} mouvement={mouvement} bords="brut" />
+        </div>
       </div>
+      <Scotch graine={`${personne}-g`} style={{ left: -40, top: 6, rotate: "-34deg" }} />
+      <Scotch graine={`${personne}-d`} style={{ right: -40, top: 6, rotate: "31deg" }} />
     </div>
   );
 };

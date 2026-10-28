@@ -12,6 +12,8 @@
     "@remotion/cli": "4.0.539",
     "@remotion/google-fonts": "4.0.539",
     "@remotion/media": "4.0.539",
+    "@remotion/media-utils": "4.0.539",
+    "@remotion/rough-notation": "4.0.539",
     "mediabunny": "1.62.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",

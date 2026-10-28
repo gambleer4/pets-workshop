@@ -139,3 +139,8 @@ export const FOND_MUSICAL: {
 // Pendant un extrait du morceau original, l'instrumentale se coupe.
 export const MORCEAU_ORIGINAL: string | null = "audio/musique-negre.m4a";
 export const MORCEAU_ORIGINAL_VOLUME = 1;
+
+// Copie WAV mono du morceau original, utilisée seulement pour faire réagir
+// l'image au son (égaliseur, pulsation sur les basses). Ce format est décodé
+// de façon fiable par le navigateur de rendu.
+export const ANALYSE_AUDIO: string | null = "audio/musique-negre-analyse.wav";

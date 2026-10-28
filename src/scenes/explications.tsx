@@ -9,14 +9,17 @@ export const Contexte: React.FC = () => (
     temps={[
       {
         photo: { personne: "lesquen", mouvement: "zoom-avant" },
+        fond: "2016",
         surtitre: "Henry de Lesquen · 2016",
         titre: "Bannir la « musique nègre »",
-        texte: "Candidat déclaré à la présidentielle, il veut chasser le rap des médias publics.",
+        texte:
+          "Candidat déclaré à la présidentielle, il veut chasser le rap des médias publics.",
       },
       {
         surtitre: "La réponse",
         titre: "Retourner l'insulte",
-        texte: "Kery James, Lino et Youssoupha en font le titre de leur morceau.",
+        texte:
+          "Kery James, Lino et Youssoupha en font le titre de leur morceau.",
       },
     ]}
   />
@@ -27,9 +30,11 @@ export const AngleMort: React.FC = () => (
     temps={[
       {
         photo: { personne: "youssoupha", mouvement: "gauche" },
+        fond: "ANGLE MORT",
         surtitre: "Youssoupha",
         titre: "L'angle mort",
-        texte: "Invisible dans le récit national. Et éliminé s'il ose défier le système.",
+        texte:
+          "Invisible dans le récit national. Et éliminé s'il ose défier le système.",
       },
     ]}
   />
@@ -40,9 +45,11 @@ export const BruitOdeur: React.FC = () => (
     temps={[
       {
         photo: { personne: "chirac", mouvement: "zoom-avant" },
+        fond: "1991",
         surtitre: "Jacques Chirac · Orléans, 1991",
         titre: "« Le bruit et l'odeur »",
-        texte: "Des mots sur les familles immigrées, prononcés par un futur président de la République.",
+        texte:
+          "Des mots sur les familles immigrées, prononcés par un futur président de la République.",
       },
     ]}
   />
@@ -53,9 +60,11 @@ export const TamTam: React.FC = () => (
     temps={[
       {
         photo: { personne: "lino", mouvement: "zoom-arriere" },
+        fond: "PRIME TIME",
         surtitre: "Kery James & Lino",
         titre: "Le tam-tam contre le rossignol",
-        texte: "On méprise le rap comme un bruit primitif. Pourtant, c'est lui qui prend le prime time.",
+        texte:
+          "On méprise le rap comme un bruit primitif. Pourtant, c'est lui qui prend le prime time.",
       },
     ]}
   />
@@ -66,9 +75,11 @@ export const Negrier: React.FC = () => (
     temps={[
       {
         photo: { personne: "lino", mouvement: "droite" },
+        fond: "NÉGRIER",
         surtitre: "Lino",
         titre: "Nègre / négrier",
-        texte: "Deux mots presque identiques. Le vrai sauvage, c'est celui qui faisait commerce des hommes.",
+        texte:
+          "Deux mots presque identiques. Le vrai sauvage, c'est celui qui faisait commerce des hommes.",
       },
     ]}
   />
@@ -79,9 +90,11 @@ export const Haiti: React.FC = () => (
     temps={[
       {
         photo: { personne: "lino", mouvement: "zoom-avant" },
+        fond: "1804",
         surtitre: "Lino",
         titre: "Haïti, 1804",
-        texte: "La première république noire de l'histoire, née d'une révolte d'esclaves.",
+        texte:
+          "La première république noire de l'histoire, née d'une révolte d'esclaves.",
       },
     ]}
   />
@@ -92,9 +105,11 @@ export const CranLicra: React.FC = () => (
     temps={[
       {
         photo: { personne: "lino", mouvement: "gauche" },
+        fond: "NI · NI",
         surtitre: "Lino",
         titre: "Ni le CRAN, ni la LICRA",
-        texte: "Pas besoin d'institution pour parler à sa place : il répond en son propre nom.",
+        texte:
+          "Pas besoin d'institution pour parler à sa place : il répond en son propre nom.",
       },
     ]}
   />
@@ -105,9 +120,11 @@ export const RosaParks: React.FC = () => (
     temps={[
       {
         photo: { personne: "rosaParks", mouvement: "zoom-avant" },
+        fond: "1955",
         surtitre: "Rosa Parks · Montgomery, 1955",
         titre: "Prendre la place qu'on vous refuse",
-        texte: "Elle reste assise. Kery James fait pareil : le rap s'installe là où on ne veut pas de lui.",
+        texte:
+          "Elle reste assise. Kery James fait pareil : le rap s'installe là où on ne veut pas de lui.",
       },
     ]}
   />
@@ -118,15 +135,19 @@ export const Louverture: React.FC = () => (
     temps={[
       {
         photo: { personne: "toussaint", mouvement: "zoom-avant" },
+        fond: "1791",
         surtitre: "Toussaint Louverture",
         titre: "La révolution haïtienne",
-        texte: "Un ancien esclave devenu général mène la révolte de Saint-Domingue.",
+        texte:
+          "Un ancien esclave devenu général mène la révolte de Saint-Domingue.",
       },
       {
         photo: { personne: "bonaparte", mouvement: "zoom-arriere" },
+        fond: "1803",
         surtitre: "Napoléon Bonaparte",
         titre: "Napoléon battu",
-        texte: "En 1803, ses troupes perdent à Vertières. L'ancienne colonie fait plier la France.",
+        texte:
+          "En 1803, ses troupes perdent à Vertières. L'ancienne colonie fait plier la France.",
       },
     ]}
   />
@@ -137,9 +158,11 @@ export const YesWeCan: React.FC = () => (
     temps={[
       {
         photo: { personne: "obama", mouvement: "zoom-avant" },
+        fond: "FM",
         surtitre: "Le refrain",
         titre: "Pas de « Yes we can »",
-        texte: "Ils refusent le slogan d'Obama et assument une musique « pas calibrée pour la FM ».",
+        texte:
+          "Ils refusent le slogan d'Obama et assument une musique « pas calibrée pour la FM ».",
       },
     ]}
   />

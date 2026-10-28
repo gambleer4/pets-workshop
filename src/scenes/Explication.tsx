@@ -1,6 +1,8 @@
-import { AbsoluteFill, Sequence, useVideoConfig } from "remotion";
+import { Underline } from "@remotion/rough-notation";
+import { AbsoluteFill, interpolate, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import type { PersonneId } from "../config";
-import { GRIS, inter } from "../components/fonts";
+import { anton, GRIS, inter } from "../components/fonts";
+import { secousse } from "../components/Mouvement";
 import { CartePhoto, type Mouvement } from "../components/Photo";
 import {
   MasqueGlissant,
@@ -12,6 +14,8 @@ import {
 export type Temps = {
   // Nouvelle photo collée par-dessus les précédentes (facultatif).
   photo?: { personne: PersonneId; mouvement?: Mouvement };
+  // Mot ou date géante qui défile lentement derrière la photo (facultatif).
+  fond?: string;
   surtitre: string;
   titre: string;
   texte: string;
@@ -23,15 +27,38 @@ const EMPLACEMENTS = [
   { x: 200, y: 250, largeur: 790, hauteur: 860, inclinaison: 3 },
 ];
 
+// Image où le titre est collé, puis où il est souligné, dans un temps.
+const ARRIVEE_TITRE = 8;
+const finTitre = (titre: string) => ARRIVEE_TITRE + titre.split(" ").length * 4;
+
 // Scène d'explication : photo(s) collée(s) en haut, texte en bas.
 // Les « temps » se partagent la durée de la scène, avec une coupe nette entre eux.
+// L'image tremble quand une carte ou un titre se colle.
 export const Explication: React.FC<{ temps: Temps[] }> = ({ temps }) => {
+  const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const duree = Math.floor(durationInFrames / temps.length);
+  const impacts = temps.flatMap((t, i) => [
+    ...(t.photo ? [i * duree] : []),
+    i * duree + ARRIVEE_TITRE,
+  ]);
   let carte = 0;
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={secousse(frame, impacts, 12)}>
+      {temps.map((t, i) =>
+        t.fond ? (
+          <Sequence
+            key={`fond-${i}`}
+            name={`Fond ${t.fond}`}
+            from={i * duree}
+            durationInFrames={i === temps.length - 1 ? durationInFrames - i * duree : duree}
+          >
+            <TypoFond texte={t.fond} />
+          </Sequence>
+        ) : null,
+      )}
+
       {temps.map((t, i) => {
         if (!t.photo) return null;
         const place = EMPLACEMENTS[Math.min(carte++, EMPLACEMENTS.length - 1)];
@@ -68,8 +95,43 @@ export const Explication: React.FC<{ temps: Temps[] }> = ({ temps }) => {
   );
 };
 
+// Mot géant en contour, qui défile lentement de droite à gauche, entre la
+// photo et le texte (il passe derrière le bas de la carte).
+const TypoFond: React.FC<{ texte: string }> = ({ texte }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <div
+        style={{
+          fontFamily: anton,
+          fontSize: 300,
+          lineHeight: 1,
+          whiteSpace: "nowrap",
+          color: "transparent",
+          WebkitTextStroke: "4px rgba(240,240,240,0.4)",
+          filter: "url(#encre)",
+          position: "absolute",
+          top: 975,
+          left: 0,
+          translate: `${interpolate(frame, [0, durationInFrames], [140, -520])}px 0px`,
+          opacity: interpolate(frame, [0, 6], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
+        }}
+      >
+        {texte}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 const BlocTexte: React.FC<Temps> = ({ surtitre, titre, texte }) => {
-  const debutTexte = 8 + titre.split(" ").length * 4 + 4;
+  const frame = useCurrentFrame();
+  const fin = finTitre(titre);
+  const debutTexte = fin + 4;
 
   return (
     <AbsoluteFill
@@ -90,7 +152,20 @@ const BlocTexte: React.FC<Temps> = ({ surtitre, titre, texte }) => {
           {surtitre}
         </div>
       </MasqueGlissant>
-      <TitreZine texte={titre} debut={8} taille={100} />
+      {/* Soulignement au marqueur, tracé une fois le titre collé. */}
+      <Underline
+        color="#f0f0f0"
+        strokeWidth={6}
+        iterations={2}
+        padding={{ top: 4 }}
+        style={{ display: "block" }}
+        progress={interpolate(frame, [fin, fin + 12], [0, 1], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        })}
+      >
+        <TitreZine texte={titre} debut={ARRIVEE_TITRE} taille={100} />
+      </Underline>
       <MotParMot
         texte={texte}
         debut={debutTexte}

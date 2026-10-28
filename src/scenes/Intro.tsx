@@ -1,14 +1,16 @@
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { CollageTrio } from "../components/CollageTrio";
+import { secousse } from "../components/Mouvement";
 import { anton, GRIS, inter } from "../components/fonts";
 import { Etiquette, LettreParLettre, MotParMot } from "../components/Texte";
 
 // Le titre s'écrit lettre par lettre, remonte, puis les trois artistes sont collés.
+// L'image tremble quand « NÈGRE » est tamponné et quand chaque carte se colle.
 export const Intro: React.FC = () => {
   const frame = useCurrentFrame();
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={secousse(frame, [22, 74, 80, 86], 16)}>
       <div
         style={{
           position: "absolute",
